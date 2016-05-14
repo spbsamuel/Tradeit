@@ -4,8 +4,8 @@ from fbmbot.models import Item
 from fbmbot.utils import post_facebook
 from common import States
 from matcher import find_match
+from processor.utils import get_url,DEFAULT_IMG_URL
 
-DEFAULT_IMG_URL = "https://pbs.twimg.com/profile_images/608080301932175360/OEeZ2ydH.jpg"
 DEFAULT_DESCRIPTION = "Your Item Description"
 
 def fb_helper_btn(title,url,payload,web_url=True):
@@ -20,7 +20,7 @@ def fb_helper_element(title,item_url="",image_url="",subtitle="",buttons=None):
         temp["subtitle"] = subtitle
     if len(item_url) > 0:
         temp["item_url"] = item_url
-    if len(buttons) > 0:
+    if buttons and len(buttons) > 0:
         temp["buttons"] = buttons
     return temp
 
@@ -130,12 +130,18 @@ def inventory(user):
             ]
             )
         )
-    return fb_msg(
-        "template",
-        fb_helper_playload_generic(
-            item_ls
+    if (item_ls):
+        return fb_msg(
+            "template",
+            fb_helper_playload_generic(
+                item_ls
+            )
         )
-    )
+    else:
+        return fb_msg(
+            "text",
+            "No items so far"
+        )
 
 
 def create_item(user,cmd_args):
@@ -145,12 +151,13 @@ def create_item(user,cmd_args):
 
     item = Item.objects.create(
         owner = user,
-        image_url =cmd_args.get("url",DEFAULT_IMG_URL),
+        image_url =cmd_args['img_url'][0]['payload']['url'],
         description = cmd_args.get("description",DEFAULT_DESCRIPTION),
         date_created = timezone.now(),
         last_active = timezone.now(),
     )
-
+    user.last_state = States.ADD_NEW
+    user.save()
     return fb_msg(
         "template",
         fb_helper_playload_generic(
@@ -180,9 +187,10 @@ def edit_item(user,cmd_args):
     :param cmd_args: url,description
     :return:
     """
-    item = user.item_set.filter(is_editing=True)
-    item.image_url = cmd_args.get("url",item.image_url)
-    item.description = cmd_args.get("url",item.description)
+    item = user.item_set.filter(is_editing=True)[0]
+    new_url = get_url(cmd_args,use_default=False)
+    item.image_url = new_url if new_url else item.image_url
+    item.description = cmd_args.get("text",item.description)
     button_ls = [
                 fb_helper_btn(
                     "Delete",
@@ -255,6 +263,7 @@ def change_location():
             )
         )
 
+# helper function
 def get_match_msg(user,item):
     return fb_msg(
         "template",
@@ -287,6 +296,8 @@ def get_match_msg(user,item):
 
 def start_trading(user):
     active_item = user.item_set.filter(active=True)[0]
+    active_item.is_editing = False
+    active_item.save()
     matched_items = find_match(active_item)
     user.last_state = States.START_TRADING
     user.save()
@@ -378,19 +389,19 @@ def process_for_reply(command,command_args,user,**kwargs):
         return welcome_msg()
 
     elif command == "instructions":
-        return instructions(user)
+        return instructions()
 
     elif command == "help":
         return help()
 
     elif command == "inventory":
-        return inventory()
+        return inventory(user)
 
     elif command == "createitem":
         return create_item(user,command_args)
 
     elif command == "edititem":
-        return edit_item()
+        return edit_item(user,cmd_args=command_args)
 
     elif command == "locationsaved":
         return location_saved()
@@ -399,7 +410,7 @@ def process_for_reply(command,command_args,user,**kwargs):
         return change_location()
 
     elif command == "starttrading":
-        return start_trading()
+        return start_trading(user)
 
     elif command == "rejected":
         return rejected()

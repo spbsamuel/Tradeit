@@ -51,7 +51,8 @@ class YoMamaBotView(generic.View):
                     # Print the message to the terminal
                     pprint("message received: {}".format(message))
                     # interpret the message
-                    cmd,cmd_args = interpret(message['message']['text'],user=user)
+                    msg_text=message['message'].get("text","")
+                    cmd,cmd_args = interpret(msg_text,user=user,msg_obj=message['message'])
                     if (cmd==None):
                         # tell the user we dun understand
                         post_facebook_text(message['sender']['id'],ASK_FOR_CLARIFICATION)

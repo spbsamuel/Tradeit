@@ -5,15 +5,17 @@ from common import Commands,States
 def is_create_item(user,msg_obj):
     if (user.last_state == States.STATIC):
         try:
-            return msg_obj['attachments']['type']=='image'
+            return 'attachments' in msg_obj.keys()
         except:
             return False
     return False
 
 def is_edit_desc(user,msg_obj):
+
     if (user.last_state == States.EDIT or user.last_state == States.ADD_NEW):
         try:
-            return len(msg_obj["text"])>0
+            msg_text = ''.join(re.findall('[a-z]',msg_obj["text"].lower()))
+            return len(msg_obj["text"])>0 and msg_text != Commands.START_TRADING
         except:
             return False
     return False
