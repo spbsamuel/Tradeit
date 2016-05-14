@@ -2,7 +2,7 @@ from django.utils import timezone
 
 from fbmbot.models import Item
 from fbmbot.utils import post_facebook
-from common import States
+from common import States,Commands
 from matcher import find_match
 from processor.utils import get_url,DEFAULT_IMG_URL
 
@@ -352,6 +352,17 @@ def rejected():
             )
         )
 
+def cancel_trading(user):
+    items = user.item_set.filter(active=True,deleted=False)
+    for item in items:
+        item.active = False
+        item.save()
+    user.last_state = States.STATIC
+    user.save()
+    return fb_msg(
+        "text",
+        "Trading Cancelled..."
+        )
 
 def success():
     return fb_msg(
@@ -417,6 +428,9 @@ def process_for_reply(command,command_args,user,**kwargs):
 
     elif command == "waiting":
         return waiting()
+
+    elif command == Commands.CANCEL_TRADING:
+        return cancel_trading(user)
 
     elif command == "success":
         return success()

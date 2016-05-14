@@ -11,6 +11,7 @@ class Commands(object):
     LOCATION_SAVED = "locationsaved"
     CHANGE_LOCATION = "changelocation"
     START_TRADING = "starttrading"
+    CANCEL_TRADING = "btncanceltrade"
     # WAITING = 'waiting'
     REJECTED = 'rejected'
     # SUCCESS = 'success'
