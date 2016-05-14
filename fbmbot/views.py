@@ -20,7 +20,6 @@ from fbmbot.utils import create_user,post_facebook_text,post_facebook
 #  ------------------------ Fill this with your page access token! -------------------------------
 PAGE_ACCESS_TOKEN = "EAAB0FiCOfH8BAML86kAIzSC6OwyyohpEjZAAfer9uZA3BZCpcCEJkVz2VkDahsnMP2uOZCOAgHk7xICSNKVjKifgEHW9dhg4cZCQlVvK4oXsaf2hP3PnWYtwUby1ZAy0DY7InWtCJVfPqLqqeJPjIvmDVtssx99G2SAZArFGfedtwZDZD"
 VERIFY_TOKEN = "2318934571"
-
 ASK_FOR_CLARIFICATION = "Sorry, I dun understand your message"
 
 def landing_page(request):
@@ -52,7 +51,7 @@ class YoMamaBotView(generic.View):
                     # Print the message to the terminal
                     pprint("message received: {}".format(message))
                     # interpret the message
-                    cmd,cmd_args = interpret(message['message']['text'])
+                    cmd,cmd_args = interpret(message['message']['text'],user=user)
                     if (cmd==None):
                         # tell the user we dun understand
                         post_facebook_text(message['sender']['id'],ASK_FOR_CLARIFICATION)

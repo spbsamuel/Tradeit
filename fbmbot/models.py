@@ -26,12 +26,13 @@ class Item(models.Model):
     owner = models.ForeignKey(BotUser)
     image_url =models.URLField(null=True)
     description = models.TextField(null=True)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
     accept_count = models.IntegerField(default=0)
     reject_count = models.IntegerField(default=0)
     date_created = models.DateTimeField()
     last_active = models.DateTimeField(null=True)
+    is_editing = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.description
