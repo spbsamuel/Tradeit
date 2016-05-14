@@ -6,4 +6,4 @@ def process_for_reply(cmd,cmdargs,user,**kwargs):
     :param user: BotUser
     :return: a dict as message to be posted back, return None if nothing is to be posted back
     """
-    return {'text':'hello'}
+    return {'text':'hello,command is {}'.format(cmd)}
