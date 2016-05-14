@@ -84,11 +84,17 @@ def instructions():
                     False
                     ),
                 fb_helper_btn(
-                    "See Inventory",
+                    "View Inventory",
                 "",
                 "btn_inventory",
                 False
-                )
+                ),
+                    fb_helper_btn(
+                        "Set Location",
+                        "",
+                        "btn_set_location",
+                        False
+                    )
                 ]
                 )
             ]
@@ -99,7 +105,7 @@ def instructions():
 def help():
     return fb_msg(
         "text",
-        "Hey there don't worry you can use these cmds:\ntrade: 'trade now'\nsee all: 'my items'"
+        "Hey there! Don't worry you can use these cmds:\nTrade: 'start trading'\nView inventory: 'inventory'"
         )
 
 
@@ -147,8 +153,7 @@ def create_item(user,cmd_args):
         owner = user,
         image_url =cmd_args.get("url",DEFAULT_IMG_URL),
         description = cmd_args.get("description",DEFAULT_DESCRIPTION),
-        date_created = timezone.now(),
-        last_active = timezone.now(),
+        date_created = timezone.now()
     )
 
     return fb_msg(
@@ -164,7 +169,7 @@ def create_item(user,cmd_args):
                 fb_helper_btn(
                     "Cancel",
                     "",
-                    "btn_cancel",
+                    "btn_delete_{}",format(item.id),
                     False
                     )
                 ]
@@ -177,9 +182,11 @@ def create_item(user,cmd_args):
 def edit_item(user,cmd_args):
     """
     :param user:
-    :param cmd_args: url,description
+    :param cmd_args: url,description,id
     :return:
     """
+    #if id is set use item(id)
+    #set all else to false
     item = user.item_set.filter(is_editing=True)
     item.image_url = cmd_args.get("url",item.image_url)
     item.description = cmd_args.get("url",item.description)
@@ -187,26 +194,21 @@ def edit_item(user,cmd_args):
                 fb_helper_btn(
                     "Delete",
                     "",
-                    "btn_delete",
+                    "btn_delete_{}".format(item.id),
                     False
                     ),
                 fb_helper_btn(
-                    "Cancel",
+                    "Save",
                     "",
-                    "btn_cancel",
+                    "btn_cancel".format(item.id),
                     False
                     )
                 ]
     if (item.image_url!=DEFAULT_IMG_URL and item.description!=DEFAULT_DESCRIPTION):
-        for i in user.item_set.all():
-            i.active = False
-            i.save()
-        item.active = True
-        item.save()
         button_ls.append(fb_helper_btn(
             "Trade This",
             "",
-            "btn_trade_active",
+            "btn_start_trade_{}".format(item.id),
             False
         ))
     return fb_msg(
@@ -241,15 +243,7 @@ def change_location():
                 "Your Location is _____",
                 "",
                 "http://static.independent.co.uk/s3fs-public/thumbnails/image/2015/03/08/09/emmawatson.jpg",
-                "Tell us your new location or send it to us to change it",
-                [
-                fb_helper_btn(
-                    "Cancel",
-                    "",
-                    "btn_cancel",
-                    False
-                    )
-                ]
+                "Send us your location to change it"
                 )
             ]
             )
@@ -269,13 +263,13 @@ def get_match_msg(user,item):
                 fb_helper_btn(
                     "Accept",
                     "",
-                    "btn_cancel",
+                    "btn_accept",
                     False
                     ),
                 fb_helper_btn(
                     "Reject",
                     "",
-                    "btn_cancel",
+                    "btn_reject",
                     False
                     )
                 ]
@@ -286,6 +280,8 @@ def get_match_msg(user,item):
 
 
 def start_trading(user):
+    #if no item create new
+    #if id is set use item(id)
     active_item = user.item_set.filter(active=True)[0]
     matched_items = find_match(active_item)
     user.last_state = States.START_TRADING
@@ -302,7 +298,7 @@ def start_trading(user):
                       payload=fb_helper_playload_btn(
                           "searching for match...",
                           [
-                              fb_helper_btn("Cancel","","btn_cancel_trade",False)
+                              fb_helper_btn("Cancel","","btn_cancel",False)
                           ]
                       )
         )
@@ -317,7 +313,7 @@ def waiting():
             fb_helper_btn(
                     "Cancel & Reject",
                     "",
-                    "btn_cancel",
+                    "btn_reject",
                     False
                     )
             ]
@@ -334,7 +330,7 @@ def rejected():
             fb_helper_btn(
                     "Find Another",
                     "",
-                    "btn_cancel",
+                    "btn_start_trade",
                     False
                     )
             ]
@@ -351,12 +347,18 @@ def success():
             fb_helper_btn(
                     "Start Chat",
                     "https://www.facebook.com/messages/",
-                    "btn_cancel",
+                    "",
                     True
                     )
             ]
             )
         )
+
+def delete():
+    return fb_msg(
+        "text",
+        "Item Deleted"
+    )
 
 
 def default():
