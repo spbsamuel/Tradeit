@@ -18,7 +18,7 @@ from fbmbot.utils import create_user,post_facebook_text,post_facebook
 
 
 #  ------------------------ Fill this with your page access token! -------------------------------
-PAGE_ACCESS_TOKEN = ""
+PAGE_ACCESS_TOKEN = "EAAB0FiCOfH8BAML86kAIzSC6OwyyohpEjZAAfer9uZA3BZCpcCEJkVz2VkDahsnMP2uOZCOAgHk7xICSNKVjKifgEHW9dhg4cZCQlVvK4oXsaf2hP3PnWYtwUby1ZAy0DY7InWtCJVfPqLqqeJPjIvmDVtssx99G2SAZArFGfedtwZDZD"
 VERIFY_TOKEN = "2318934571"
 
 jokes = { 'stupid': ["""Yo' Mama is so stupid, she needs a recipe to make ice cubes.""",
@@ -70,7 +70,7 @@ class YoMamaBotView(generic.View):
                     # Print the message to the terminal
                     pprint("message received: {}".format(message))
                     # interpret the message
-                    cmd,cmd_args = interpret(message['message'])
+                    cmd,cmd_args = interpret(message['message']['text'])
                     if (cmd==None):
                         # tell the user we dun understand
                         post_facebook_text(message['sender']['id'],ASK_FOR_CLARIFICATION)
@@ -80,14 +80,14 @@ class YoMamaBotView(generic.View):
                         if (reply):
                             post_facebook(fbid=user.fb_user_id,msg_dict=reply)
                         # if this is new item, try to find match
-
+        return HttpResponse()
 
     def get_and_save_profile(self,sender_id):
         # return BotUser, and create it
         # check whether the id is there
         user = BotUser.objects.filter(fb_user_id=sender_id)
         if (user):
-            return user
+            return user[0]
         # if not, ask for the profile
         user_details_url = "https://graph.facebook.com/v2.6/%s"%sender_id
         user_details_params = {'fields':'first_name,last_name,profile_pic', 'access_token':PAGE_ACCESS_TOKEN}

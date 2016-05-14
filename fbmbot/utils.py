@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from models import BotUser,Item
 
-PAGE_ACCESS_TOKEN = ""
+PAGE_ACCESS_TOKEN = "EAAB0FiCOfH8BAML86kAIzSC6OwyyohpEjZAAfer9uZA3BZCpcCEJkVz2VkDahsnMP2uOZCOAgHk7xICSNKVjKifgEHW9dhg4cZCQlVvK4oXsaf2hP3PnWYtwUby1ZAy0DY7InWtCJVfPqLqqeJPjIvmDVtssx99G2SAZArFGfedtwZDZD"
 
 def create_user(fb_id,user_details):
     return BotUser.objects.create(
@@ -20,7 +20,7 @@ def create_user(fb_id,user_details):
             profile_pic = user_details.get("profile_pic","#"), #TODO: check
             first_name = user_details.get("first_name"),
             last_name = user_details.get("last_name"),
-            gender = user_details.get("gender")
+            gender = user_details.get("gender","male")
         )
 
 def post_facebook_text(fbid, msg):
