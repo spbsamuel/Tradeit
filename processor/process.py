@@ -96,7 +96,37 @@ def help():
         )
 
 
-def inventory():
+def inventory(user):
+    """
+    Return list of elements
+
+    use this function
+
+    fb_helper_element(
+            "Item desc",
+            "",
+            "Item Picture",
+            "",
+            [
+            fb_helper_btn(
+                "Trade This",
+                "",
+                "btn_start_trade",
+                False
+                ),
+            fb_helper_btn(
+                "Edit This",
+                "",
+                "btn_inventory",
+                False
+                )
+            ]
+            )
+    """
+    user.item_set.all()
+    element_list = [];
+    #for item in item_set push element into element_list
+
     return fb_msg(
         "template",
         fb_helper_playload_generic(
@@ -167,6 +197,9 @@ def inventory():
 
 
 def create_item():
+    """
+
+    """
     return fb_msg(
         "template",
         fb_helper_playload_generic(
@@ -351,7 +384,7 @@ def process_for_reply(command,command_args,user,**kwargs):
         return welcome_msg()
 
     elif command == "instructions":
-        return instructions()
+        return instructions(user)
 
     elif command == "help":
         return help()
