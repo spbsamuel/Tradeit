@@ -78,9 +78,9 @@ def instructions():
                 "",
                 [
                 fb_helper_btn(
-                    "Start Trading",
+                    "Add item to trade",
                     "",
-                    "btn_start_trade",
+                    "btn_create_new",
                     False
                     ),
                 fb_helper_btn(
@@ -394,6 +394,23 @@ def default():
         "text",
         "Wa Ham Zi Tou Ahhhhhh"
         )
+
+def rejecttrade():
+    #msg other user to tell him that he is rejected 
+    return fb_msg(
+        "template",
+        fb_helper_playload_btn(
+            "You rejected the offer",
+            [
+                fb_helper_btn(
+                    "Find Another",
+                    "",
+                    "btn_start_trade",
+                    False
+                )
+            ]
+        )
+    )
 
 
 def process_for_reply(command,command_args,user,**kwargs):
