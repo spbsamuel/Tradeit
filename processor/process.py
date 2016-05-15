@@ -10,6 +10,8 @@ DEFAULT_DESCRIPTION = "Your Item Description"
 
 def fb_helper_btn(title,url,payload,web_url=True):
     type = "web_url" if web_url else "postback"
+    if type == "web_url":
+        return {"type": type, "title": title, "url": url}
     return {"type": type, "title":title,"payload":payload}
 
 def fb_helper_element(title,item_url="",image_url="",subtitle="",buttons=None):
@@ -46,7 +48,7 @@ def welcome_msg():
     return fb_msg(
         "template",
         fb_helper_playload_btn(
-            "Welcome",
+            "Hi I am Tradeit! Start with any of these buttons",
             [fb_helper_btn("Start Trading","","btn_start_trade",False),
             fb_helper_btn("How it works","","btn_instructions",False)]
             )
