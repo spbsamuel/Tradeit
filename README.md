@@ -14,3 +14,10 @@ The description of the item is parsed using Tay Yi's NLP parser which gives us s
 With the use of the addition generated meta data we use cosine similarity to match items to each other.
 
 This project was created by five NTU students using Django as the main engine and interfacing with Facebook's bot api.
+
+```sh
+$ git clone https://github.com/spbsamuel/Tradeit.git Tradeit
+$ cd Tradeit
+$ pip install
+$ python manage.py runserver
+```
