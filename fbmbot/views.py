@@ -25,6 +25,9 @@ ASK_FOR_CLARIFICATION = "Sorry, I dun understand your message"
 def landing_page(request):
     return render(request,"landing.html")
 
+def is_btn_postback(msg_obj):
+    return "postback" in msg_obj.keys() and "message" not in msg_obj.keys()
+
 
 # Create your views here.
 class YoMamaBotView(generic.View):
@@ -45,22 +48,28 @@ class YoMamaBotView(generic.View):
 
         for entry in incoming_message['entry']:
             for message in entry['messaging']:
-                if 'message' in message:
-                    # get and save user profile if this is the first time
-                    user = self.get_and_save_profile(message['sender']['id'])
-                    # Print the message to the terminal
-                    pprint("message received: {}".format(message))
-                    # interpret the message
-                    cmd,cmd_args = interpret(message['message']['text'],user=user)
-                    if (cmd==None):
-                        # tell the user we dun understand
-                        post_facebook_text(message['sender']['id'],ASK_FOR_CLARIFICATION)
-                        return HttpResponse()
-                    else:
-                        reply = process_for_reply(cmd,cmd_args,user)
-                        if (reply):
-                            post_facebook(fbid=user.fb_user_id,msg_dict=reply)
-                        # if this is new item, try to find match
+                # get and save user profile if this is the first time
+                user = self.get_and_save_profile(message['sender']['id'])
+                # Print the message to the terminal
+                pprint("message received: {}".format(message))
+                if ("message" in message.keys()):
+                    msg_text=message['message'].get("text","")
+                    msg_obj = message['message']
+                elif("postback" in message.keys()):
+                    msg_text = message['postback']['payload']
+                    msg_obj = message['postback']
+                else:
+                    return HttpResponse()
+                cmd,cmd_args = interpret(msg_text,user=user,msg_obj=msg_obj)
+                if (cmd==None):
+                    # tell the user we dun understand
+                    post_facebook_text(message['sender']['id'],ASK_FOR_CLARIFICATION)
+                    return HttpResponse()
+                else:
+                    reply = process_for_reply(cmd,cmd_args,user)
+                    if (reply):
+                        post_facebook(fbid=user.fb_user_id,msg_dict=reply)
+
         return HttpResponse()
 
     def get_and_save_profile(self,sender_id):

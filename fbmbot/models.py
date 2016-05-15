@@ -11,7 +11,7 @@ class BotUser(models.Model):
     lat = models.FloatField()
     lon = models.FloatField()
     last_state = models.IntegerField(default=0)
-    profile_pic = models.URLField()
+    profile_pic = models.URLField(max_length=500)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     gender = models.CharField(max_length=10,choices=[
