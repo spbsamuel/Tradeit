@@ -189,15 +189,14 @@ def create_item(user,cmd_args):
 def edit_item(user,cmd_args):
     """
     :param user:
-    :param cmd_args: url,description,id
+
+    :param cmd_args: url,description, id
     :return:
     """
-    #if id is set use item(id)
-    #set all else to false
-    # item = user.item_set.filter(is_editing=True)
-    # item.image_url = cmd_args.get("url",item.image_url)
-    # item.description = cmd_args.get("url",item.description)
-    item = user.item_set.filter(is_editing=True)[0]
+    if (cmd_args.get("id")):
+        item = Item.objects.get(id=cmd_args.get("id"))
+    else:
+        item = user.item_set.filter(is_editing=True)[0]
     new_url = get_url(cmd_args,use_default=False)
     item.image_url = new_url if new_url else item.image_url
     item.description = cmd_args.get("text",item.description)
@@ -236,6 +235,10 @@ def edit_item(user,cmd_args):
             ]
             )
         )
+
+
+def delete_item(user,cmdargs):
+    pass
 
 
 def location_saved():

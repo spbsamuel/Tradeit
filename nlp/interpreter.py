@@ -35,7 +35,8 @@ def interpret(message,*args,**kwargs):
     """
     user = kwargs.get("user")
     msg_obj = kwargs.get("msg_obj")
-    lowered_msg = ''.join(re.findall('[a-z]',message.lower()))
+
+    lowered_msg = ''.join(re.findall('[a-z0-9]',message.lower()))
     if (is_create_item(user,msg_obj)):
         return Commands.CREATE_ITEM,{'img_url':msg_obj['attachments']}
     elif(is_edit_desc(user,msg_obj)):
@@ -44,4 +45,9 @@ def interpret(message,*args,**kwargs):
         return Commands.EDIT_ITEM,{'img_url':msg_obj['attachments']}
     elif(user.last_state == States.CHANGE_LOCATION):
         return Commands.LOCATION_SAVED,{'text':msg_obj['text']}
-    return lowered_msg,{'msg_obj':msg_obj}
+
+    if (lowered_msg.find("btn")!=-1):
+        id = int(re.findall('[0-9]+',lowered_msg)[0])
+        return lowered_msg,{'msg_obj':msg_obj,'id':id}
+    else:
+        return lowered_msg,{'msg_obj':msg_obj}

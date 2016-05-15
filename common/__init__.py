@@ -10,8 +10,8 @@ class Commands(object):
     EDIT_ITEM = "edititem"
     LOCATION_SAVED = "locationsaved"
     CHANGE_LOCATION = "changelocation"
-    START_TRADING = "starttrading"
-    CANCEL_TRADING = "btncanceltrade"
+    START_TRADING = "starttrade"
+    CANCEL_TRADING = "canceltrade"
     # WAITING = 'waiting'
     REJECTED = 'rejected'
     # SUCCESS = 'success'
