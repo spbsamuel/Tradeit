@@ -415,14 +415,6 @@ def rejecttrade():
         )
     )
 
-def forward(msg):
-    #forwards msg to the other user
-    #find match that is ongoing get other user id
-    text_msg = "Other user: "+msg+"\n Use #quit to leave"
-    msg = fb_msg("text",msg)
-    #post_facebook(fbid=other_user.fb_user_id, msg_dict=msg)
-    pass
-
 
 def process_for_reply(command,command_args,user,**kwargs):
     
