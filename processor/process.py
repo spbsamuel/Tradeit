@@ -63,14 +63,14 @@ def instructions():
         fb_helper_playload_generic(
             [
             fb_helper_element(
-                "Instruction Page 1",
+                "Upload an Item",
                 "",
-                "http://static.independent.co.uk/s3fs-public/thumbnails/image/2015/03/08/09/emmawatson.jpg"
+                "https://scontent-sin1-1.xx.fbcdn.net/v/t34.0-12/13246140_120300000003876160_922088848_n.png?oh=89f8c0de998cc6dee876ea789aaca439&oe=573A0165"
                 ),
             fb_helper_element(
-                "Instruction Page 2",
+                "Start Trading",
                 "",
-                "http://static.independent.co.uk/s3fs-public/thumbnails/image/2015/03/08/09/emmawatson.jpg"),
+                "https://scontent-sin1-1.xx.fbcdn.net/v/t34.0-12/13180928_120300000004207234_2003940716_n.png?oh=ac058cf6890d30bf2837a534c82f1e65&oe=5739C174"),
             fb_helper_element(
                 "You can use these links",
                 "",
@@ -322,6 +322,7 @@ def start_trading(user):
 
 
 def waiting():
+
     return fb_msg(
         "template",
         fb_helper_playload_btn(
@@ -396,7 +397,7 @@ def default():
         )
 
 def rejecttrade():
-    #msg other user to tell him that he is rejected 
+    #msg other user to tell him that he is rejected
     return fb_msg(
         "template",
         fb_helper_playload_btn(
